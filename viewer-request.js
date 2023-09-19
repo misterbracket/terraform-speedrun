@@ -1,28 +1,20 @@
-// Basic routing helper to serve the right html file from s3
-// assume uri to be like /**/* or /**/*/ that require modification
-// modify uri by appending .html so that the right object can be found in s3
-
 function handler(event) {
-  const request = event.request;
-  const pathSegments = request.uri.split("/");
+  var request = event.request;
+  var routes = request.uri.split("/");
 
-  //Pop off the last segment if it is empty (trailing slash)
-  if (pathSegments[pathSegments.length - 1] === "") {
-    pathSegments.pop();
+  // assume uri to be like /**/* or /**/*/ that require modification
+  // modify uri by appending .html so that the right object can be found in s3
+  if (routes[routes.length - 1] === "") {
+    routes.pop();
   }
 
-  //Append .html to the last segment if it does not contain a period
-  if (pathSegments.length > 0) {
-    const lastRoute = pathSegments[pathSegments.length - 1];
-    if (
-      lastRoute !== "" &&
-      !pathSegments[pathSegments.length - 1].includes(".")
-    ) {
-      pathSegments[pathSegments.length - 1] += ".html";
+  if (routes.length > 0) {
+    var lastRoute = routes[routes.length - 1];
+    if (lastRoute !== "" && !routes[routes.length - 1].includes(".")) {
+      routes[routes.length - 1] += ".html";
     }
 
-    //Rebuild the URI and add a leading slash
-    let newUri = pathSegments.join("/");
+    var newUri = routes.join("/");
     if (!newUri.startsWith("/")) {
       newUri = "/" + newUri;
     }

@@ -1,7 +1,7 @@
 module "cdn" {
   source = "terraform-aws-modules/cloudfront/aws"
 
-  comment             = "Apollo Goes Infra"
+  comment             = "Apollo Goes Infra - ${var.developer_name}"
   enabled             = true
   http_version        = "http2and3"
   is_ipv6_enabled     = true
@@ -10,18 +10,20 @@ module "cdn" {
   wait_for_deployment = false
 
 
-  create_origin_access_identity = true
-  origin_access_identities = {
-    awesome_s3 = "My awesome cloudfront can access"
+  create_origin_access_control = true
+  origin_access_control = {
+    s3_oac = {
+      description      = "CloudFront access to S3"
+      origin_type      = "s3"
+      signing_behavior = "always"
+      signing_protocol = "sigv4"
+    }
   }
 
   origin = {
     awesome_s3 = {
-      domain_name = module.website_s3_bucket.s3_bucket_bucket_regional_domain_name
-      s3_origin_config = {
-        origin_access_identity = "awesome_s3"
-        # key in `origin_access_identities`
-      }
+      domain_name           = module.website_s3_bucket.s3_bucket_bucket_regional_domain_name
+      origin_access_control = "s3_oac" # key in `origin_access_control`
     }
   }
 
@@ -45,21 +47,10 @@ module "cdn" {
   }
 
   default_root_object = "index.html"
-
-  custom_error_response = [{
-    error_code         = 404
-    response_code      = 404
-    response_page_path = "/errors/404.html"
-    }, {
-    error_code         = 403
-    response_code      = 403
-    response_page_path = "/errors/403.html"
-  }]
-
 }
 
 resource "aws_cloudfront_function" "viewer_request" {
-  name    = "my-awesome-cdn-viewer-request"
+  name    = "my-awesome-cdn-viewer-request-${var.developer_name}"
   runtime = "cloudfront-js-1.0"
   publish = true
   code    = file("${path.module}/viewer-request.js")

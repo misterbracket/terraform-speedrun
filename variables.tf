@@ -4,7 +4,6 @@ variable "aws_region" {
 }
 
 
-variable "s3_bucket_name" {
-  type    = string
-  default = "apollo-goes-infra-lisbon-2023"
+variable "developer_name" {
+  type = string
 }

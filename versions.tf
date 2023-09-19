@@ -13,6 +13,9 @@ terraform {
   }
 }
 
+
+# Terrafrom has many providers: Github, AWS, Azure, etc. 
+# This is the provider we are using.
 provider "aws" {
   region = var.aws_region
 }
