@@ -15,8 +15,7 @@ Deploy a minimal website with Terrafrom and AWS
 
 Upload the website
 ```bash
- aws s3 sync ./website s3://apollo-goes-infra-lisbon-2023/
- aws s3 sync ./website s3://<bucket_name>/
+ aws s3 sync ./website s3://apollo-goes-infra-lisbon-2023-<developer_name>/
 ```
 
 
